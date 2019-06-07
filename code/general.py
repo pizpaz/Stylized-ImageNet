@@ -13,18 +13,25 @@ from os.path import join as pjoin
 ###########################################################
 
 # TODO Dear user, please change these paths:
-IMAGENET_PATH = "/gpfs01/bethge/data/imagenet-raw/raw-data/" # TODO specify ImageNet path
-STYLIZED_IMAGENET_PATH = "/gpfs01/bethge/data/imagenet-styletransfer-v2/" # TODO specify target path: where should Stylized-ImageNet be stored?
+IMAGENET_PATH = "/home1/irteam/user/blackrussian/wagon/data_collection/raw/ImageNet"
+#STYLIZED_IMAGENET_PATH = "/gpfs01/bethge/data/imagenet-styletransfer-v2/" # TODO specify target path: where should Stylized-ImageNet be stored?
+#STYLIZED_IMAGENET_PATH = "/home1/irteam/user/blackrussian/wagon/data_collection/raw/Stylized-Imagenet"
+STYLIZED_IMAGENET_PATH = "./500_to_500_center_crop"
 
 
 ###########################################################
 #    SETTINGS THAT USUALLY DON'T NEED TO BE CHANGED
 ###########################################################
 
-IMG_SIZE = 224
+#IMG_SIZE = 224
+IMG_SIZE = 500
 ADAIN_RAW_PAINTINGS_DIR = "./paintings_raw/"
-ADAIN_EXCLUDED_PAINTINGS_DIR = "./paintings_excluded/"
-ADAIN_PREPROCESSED_PAINTINGS_DIR = "./paintings_preprocessed/"
+
+ADAIN_EXCLUDED_PAINTINGS_DIR = "./paintings_excluded_{}/".format(IMG_SIZE)
+ADAIN_PREPROCESSED_PAINTINGS_DIR = "./paintings_preprocessed_{}/".format(IMG_SIZE)
+print('@@ADAIN = {}'.format(ADAIN_PREPROCESSED_PAINTINGS_DIR))
+#ADAIN_EXCLUDED_PAINTINGS_DIR = "./paintings_excluded_224"
+#ADAIN_PREPROCESSED_PAINTINGS_DIR = "./paintings_preprocessed_224"
 
 ADAIN_MODEL_DIR = "./models/"
 ADAIN_VGG_PATH = pjoin(ADAIN_MODEL_DIR, "vgg_normalised.pth")
@@ -52,12 +59,12 @@ def get_default_adain_args():
     # Additional options
     parser.add_argument('--content_size', type=int, default=IMG_SIZE,
                         help='New (minimum) size for the content image, \
-                        keeping the original size if set to 0')
+                        keeping the original size if set to 0') #쓰이는 곳 없음.
     parser.add_argument('--style_size', type=int, default=IMG_SIZE,
                         help='New (minimum) size for the style image, \
                         keeping the original size if set to 0')
     parser.add_argument('--crop', action='store_true',
-                        help='do center crop to create squared image')
+                        help='do center crop to create squared image') # style image에 대한 crop 여부
     parser.add_argument('--save_ext', default='.jpg',
                         help='The extension name of the output image')
 

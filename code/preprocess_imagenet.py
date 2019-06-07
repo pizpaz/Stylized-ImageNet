@@ -17,8 +17,6 @@ import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 import torchvision.models as models
 from torchvision.utils import save_image, make_grid
-from tensorboardX import SummaryWriter
-from PIL import Image
 
 import general as g
 import adain
@@ -36,6 +34,8 @@ parser.add_argument('--batch-size', default=256, type=int,
                     metavar='N', help='mini-batch size (default: 256)')
 parser.add_argument('--print-freq', '-p', default=1, type=int,
                     metavar='N', help='print frequency (default: 10)')
+parser.add_argument('--img_preprocess', type=str, default='resize_only',
+                    help='A method of image preprocess (resize_only, center_crop)')
 
 
 def main():
@@ -52,9 +52,14 @@ def main():
     #############################################################
 
     style_dir = g.ADAIN_PREPROCESSED_PAINTINGS_DIR
-    assert len(os.listdir(style_dir)) == 79395
+    if g.IMG_SIZE == 400:
+      assert len(os.listdir(style_dir)) == 72323 #size 400
+    elif g.IMG_SIZE == 500:
+      assert len(os.listdir(style_dir)) == 61336 #size 500
+    else:
+      assert len(os.listdir(style_dir)) == 79395
 
-    do_style_preprocessing = False
+    do_style_preprocessing = False 
     num_styles = len(os.listdir(style_dir))
     print("=> Using "+str(num_styles)+" different style images.")
     all_styles = [[] for _ in range(num_styles)]
@@ -62,6 +67,7 @@ def main():
         all_styles[i] = os.path.join(style_dir, name)
 
     transfer_args = g.get_default_adain_args()
+    #transfer_args.gpu = 0
     transferer = adain.AdaIN(transfer_args)
     print("=> Succesfully loaded style transfer algorithm.")
 
@@ -100,15 +106,27 @@ def main():
                                pin_memory = True)
 
 
-    default_transforms = transforms.Compose([
-                                  transforms.Resize(256),
+    print('@@IMG_PREPROCESS = {}'.format(args.img_preprocess))
+    if args.img_preprocess == 'center_crop':
+        print('@@CENTER CROP')
+        default_transforms = transforms.Compose([
+                                  transforms.Resize(g.IMG_SIZE),
                                   transforms.CenterCrop(g.IMG_SIZE),
                                   transforms.ToTensor()])
+    elif args.img_preprocess == 'resize_only':
+        print('@@NO CENTER CROP img_size = {}'.format(g.IMG_SIZE))
+        default_transforms = transforms.Compose([
+                                  transforms.Resize((g.IMG_SIZE, g.IMG_SIZE)),
+                                  transforms.ToTensor()])
+    else:
+        raise ValueError('invalid arg.({})'.format(args.img_preprocess))
 
+    '''
     val_loader = MyDataLoader(root = valdir,
                               transform = default_transforms,
                               shuffle = False,
                               sampler = None)
+    '''
 
     train_loader = MyDataLoader(root = traindir,
                                 transform = default_transforms,
@@ -123,10 +141,12 @@ def main():
     #############################################################
 
     print("Preprocessing validation data:")
+    '''
     preprocess(data_loader = val_loader,
                input_transforms = [style_transfer],
                sourcedir = valdir,
                targetdir = os.path.join(g.STYLIZED_IMAGENET_PATH, "val/"))
+    '''
 
     print("Preprocessing training data:")
     preprocess(data_loader = train_loader,
@@ -160,7 +180,6 @@ def preprocess(data_loader, sourcedir, targetdir,
     all_classes = sorted(os.listdir(sourcedir))
 
     for i, (input, target) in enumerate(data_loader.loader):
-
         # apply manipulations
         for transform in input_transforms:
             input = transform(input)
