@@ -16,7 +16,7 @@ from os.path import join as pjoin
 IMAGENET_PATH = "/home1/irteam/user/blackrussian/wagon/data_collection/raw/ImageNet"
 #STYLIZED_IMAGENET_PATH = "/gpfs01/bethge/data/imagenet-styletransfer-v2/" # TODO specify target path: where should Stylized-ImageNet be stored?
 #STYLIZED_IMAGENET_PATH = "/home1/irteam/user/blackrussian/wagon/data_collection/raw/Stylized-Imagenet"
-STYLIZED_IMAGENET_PATH = "./500_to_500_center_crop"
+STYLIZED_IMAGENET_PATH = "./512_to_512_center_crop"
 
 
 ###########################################################
@@ -24,7 +24,7 @@ STYLIZED_IMAGENET_PATH = "./500_to_500_center_crop"
 ###########################################################
 
 #IMG_SIZE = 224
-IMG_SIZE = 500
+IMG_SIZE = 512
 ADAIN_RAW_PAINTINGS_DIR = "./paintings_raw/"
 
 ADAIN_EXCLUDED_PAINTINGS_DIR = "./paintings_excluded_{}/".format(IMG_SIZE)

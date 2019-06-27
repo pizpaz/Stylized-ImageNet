@@ -53,9 +53,9 @@ def main():
 
     style_dir = g.ADAIN_PREPROCESSED_PAINTINGS_DIR
     if g.IMG_SIZE == 400:
-      assert len(os.listdir(style_dir)) == 72323 #size 400
-    elif g.IMG_SIZE == 500:
-      assert len(os.listdir(style_dir)) == 61336 #size 500
+      assert len(os.listdir(style_dir)) == 72323
+    elif g.IMG_SIZE == 512:
+      assert len(os.listdir(style_dir)) == 59674
     else:
       assert len(os.listdir(style_dir)) == 79395
 
